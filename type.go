@@ -9,13 +9,19 @@ type HtmlCollector struct {
 	archive string
 }
 
+type version struct {
+	version  string
+	types    string
+	filename string
+}
+
 type Manager struct {
 	goOs         string
 	goArch       string
 	goPath       string
 	urlDownloads string
 	url          string
-	goVersion    map[int][]string
+	goVersion    []version
 	html         HtmlCollector
 }
 
@@ -30,7 +36,6 @@ func NewManager(goos string, goarch string) (t *Manager) {
 			class:   "toggle",
 			archive: "archive",
 		},
-		goVersion: make(map[int][]string),
 	}
 	t.getVersion()
 	return
