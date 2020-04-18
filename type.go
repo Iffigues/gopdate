@@ -10,7 +10,11 @@ type HtmlCollector struct {
 }
 
 type version struct {
+	archived bool
 	version  string
+	kind     string
+	os       string
+	arch     string
 	types    string
 	filename string
 }
