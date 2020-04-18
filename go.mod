@@ -1,4 +1,4 @@
-module gopdate
+module github.com/Iffigues/gopdate
 
 go 1.14
 
