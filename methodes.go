@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -49,7 +48,6 @@ func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 	if step > 0 {
 		t.goVersion = append(t.goVersion, s)
 	}
-	fmt.Println(t.goVersion)
 }
 
 func (t *Manager) addVersion(n *html.Node, ff string, ok bool) {
