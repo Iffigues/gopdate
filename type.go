@@ -4,6 +4,8 @@ import (
 	"go/build"
 	"log"
 	"os/user"
+	"runtime"
+	"strings"
 )
 
 type HtmlCollector struct {
@@ -11,14 +13,19 @@ type HtmlCollector struct {
 	archive string
 }
 
+type opt struct {
+}
+
 type version struct {
-	archived bool   `json:"archived"`
-	version  string `json:"version"`
-	kind     string `json:"kind"`
-	os       string `json:"os"`
-	arch     string `json:"arch"`
-	types    string `json:"types"`
-	filename string `json:"filename"`
+	Archived bool   `json:"archived"`
+	Version  string `json:"version"`
+	Kind     string `json:"kind"`
+	Os       string `json:"os"`
+	Arch     string `json:"arch"`
+	Types    string `json:"types"`
+	Filename string `json:"filename"`
+	GOARCH   string `json:"goarch"`
+	GOOS     string `kson:"goos"`
 }
 
 type Manager struct {
@@ -30,19 +37,39 @@ type Manager struct {
 	url             string
 	goVersion       []version
 	downloadVersion []version
+	opt             *opt
 	html            HtmlCollector
 }
 
-func NewManager(goos string, goarch string) (t *Manager) {
+func (t *Manager) getGo() {
+	for i, val := range t.goVersion {
+		if val.Arch == "bootstrap" {
+			t.goVersion[i].GOARCH = val.Arch
+			t.goVersion[i].GOOS = val.Os
+		} else if val.Kind != "Source" {
+			z := strings.Split(val.Filename, ".")
+			for _, vals := range z {
+				if strings.Contains(vals, "-") {
+					zz := strings.Split(vals, "-")
+					t.goVersion[i].GOARCH = zz[1]
+					t.goVersion[i].GOOS = zz[0]
+				}
+			}
+		}
+	}
+}
+
+func NewManager(opt *opt) (t *Manager) {
 	usr, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	t = &Manager{
+		opt:          opt,
 		home:         usr.HomeDir,
-		goOs:         goos,
-		goArch:       goarch,
+		goOs:         runtime.GOOS,
+		goArch:       runtime.GOARCH,
 		urlDownloads: "https://dl.google.com/go/",
 		url:          "https://golang.org/dl/",
 		goPath:       build.Default.GOPATH,
@@ -53,5 +80,6 @@ func NewManager(goos string, goarch string) (t *Manager) {
 	}
 	t.getHome()
 	t.getVersion()
+	t.getGo()
 	return
 }

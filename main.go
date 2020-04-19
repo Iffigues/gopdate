@@ -1,9 +1,9 @@
 package main
 
-import (
-	"runtime"
-)
+import "fmt"
 
 func main() {
-	NewManager(runtime.GOOS, runtime.GOARCH)
+	opts := NewOPT()
+	e := NewManager(opts)
+	fmt.Print(e.Find())
 }

@@ -22,22 +22,22 @@ func getFilename(n *html.Node) (a string) {
 func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 	var f func(*html.Node)
 	var s version
-	s.archived = ok
+	s.Archived = ok
 	step := 0
 	f = func(g *html.Node) {
 		if g.Type == html.ElementNode && g.Data == "td" {
 			step = step + 1
 			if step == 1 {
-				s.filename = getFilename(g)
+				s.Filename = getFilename(g)
 			}
 			if step == 2 {
-				s.kind = getFilename(g)
+				s.Kind = getFilename(g)
 			}
 			if step == 3 {
-				s.os = getFilename(g)
+				s.Os = getFilename(g)
 			}
 			if step == 4 {
-				s.arch = getFilename(g)
+				s.Arch = getFilename(g)
 			}
 		}
 		for c := g.FirstChild; c != nil; c = c.NextSibling {
@@ -51,8 +51,6 @@ func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 }
 
 func (t *Manager) addVersion(n *html.Node, ff string, ok bool) {
-	//val := ff[2:]
-	//var s version
 	var f func(*html.Node)
 	f = func(g *html.Node) {
 		if g.Type == html.ElementNode && g.Data == "tr" {
