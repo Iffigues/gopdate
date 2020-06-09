@@ -8,12 +8,14 @@ import (
 	"strings"
 )
 
-type HtmlCollector struct {
+// HTMLCollector is here
+type HTMLCollector struct {
 	class   string
 	archive string
 }
 
 type opt struct {
+	command string
 }
 
 type version struct {
@@ -28,17 +30,20 @@ type version struct {
 	GOOS     string `kson:"goos"`
 }
 
+// Manager et the base system manager
 type Manager struct {
 	home            string
 	goOs            string
 	goArch          string
 	goPath          string
+	goRoot          string
 	urlDownloads    string
 	url             string
 	goVersion       []version
 	downloadVersion []version
+	cachedVersion   []version
 	opt             *opt
-	html            HtmlCollector
+	html            HTMLCollector
 }
 
 func (t *Manager) getGo() {
@@ -59,6 +64,7 @@ func (t *Manager) getGo() {
 	}
 }
 
+// NewManager retrun manager
 func NewManager(opt *opt) (t *Manager) {
 	usr, err := user.Current()
 	if err != nil {
@@ -73,7 +79,8 @@ func NewManager(opt *opt) (t *Manager) {
 		urlDownloads: "https://dl.google.com/go/",
 		url:          "https://golang.org/dl/",
 		goPath:       build.Default.GOPATH,
-		html: HtmlCollector{
+		goRoot:       build.Default.GOROOT,
+		html: HTMLCollector{
 			class:   "toggle",
 			archive: "archive",
 		},
@@ -81,5 +88,7 @@ func NewManager(opt *opt) (t *Manager) {
 	t.getHome()
 	t.getVersion()
 	t.getGo()
+	t.cachedVersion = t.goVersion
+	t.start()
 	return
 }

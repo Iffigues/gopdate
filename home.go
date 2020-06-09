@@ -16,7 +16,7 @@ func (t *Manager) getHome() {
 	if _, err := os.Stat(ee); os.IsNotExist(err) {
 		os.Mkdir(ee, 0777)
 	}
-	g := e + "/package.json"
+	g := e + "/installed.json"
 	if _, err := os.Stat(g); os.IsNotExist(err) {
 		return
 	}
@@ -30,9 +30,22 @@ func (t *Manager) getHome() {
 		log.Fatal(err)
 	}
 	json.Unmarshal(byteValue, &t.downloadVersion)
+	g = e + "/cached.json"
+	if _, err := os.Stat(g); os.IsNotExist(err) {
+		return
+	}
+	jsonFile, err = os.Open(g)
+	if err != nil {
+		log.Fatal(err)
+	}
+	byteValue, err = ioutil.ReadAll(jsonFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	json.Unmarshal(byteValue, &t.cachedVersion)
 }
 
-func (t *Manager) WriteJSON() {
+func (t *Manager) writeJSON() {
 	file, _ := json.Marshal(t.downloadVersion)
 	_ = ioutil.WriteFile(t.home+"/.gopdate/package.json", file, 0644)
 

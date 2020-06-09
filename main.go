@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	opts := NewOPT()
+	opts := newOPT()
 	e := NewManager(opts)
-	fmt.Print(e.Find())
+	fmt.Print(e.find())
 }
