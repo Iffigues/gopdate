@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
-
 	"golang.org/x/net/html"
+	"strings"
 )
 
 func getFilename(n *html.Node) (a string) {
@@ -23,6 +23,7 @@ func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 	var f func(*html.Node)
 	var s version
 	s.Archived = ok
+	s.Unstable = t.unstable
 	step := 0
 	f = func(g *html.Node) {
 		if g.Type == html.ElementNode && g.Data == "td" {
@@ -34,7 +35,7 @@ func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 				s.Kind = getFilename(g)
 			}
 			if step == 3 {
-				s.Os = getFilename(g)
+				s.Os = strings.ToLower(getFilename(g))
 			}
 			if step == 4 {
 				s.Arch = getFilename(g)
@@ -77,6 +78,13 @@ func (t *Manager) getVersion() {
 	}
 	var f func(*html.Node)
 	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "h3" {
+			for _, a := range n.Attr {
+				if a.Key == "id" && a.Val == "unstable" {
+					t.unstable = true
+				}
+			}
+		}
 		if n.Type == html.ElementNode && n.Data == "div" {
 			ff := ""
 			ok := false
@@ -94,6 +102,7 @@ func (t *Manager) getVersion() {
 				}
 				if ff != "" && ok {
 					t.addVersion(n, ff, oks)
+					t.unstable = false
 					break attr
 				}
 			}

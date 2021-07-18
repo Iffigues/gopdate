@@ -1,7 +1,6 @@
 package main
 
 func (c *Manager) help() {
-	print("ee")
 }
 
 func (c *Manager) start() {

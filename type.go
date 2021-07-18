@@ -20,6 +20,7 @@ type opt struct {
 
 type version struct {
 	Archived bool   `json:"archived"`
+	Unstable bool   `json:"unstable"`
 	Version  string `json:"version"`
 	Kind     string `json:"kind"`
 	Os       string `json:"os"`
@@ -39,6 +40,7 @@ type Manager struct {
 	goRoot          string
 	urlDownloads    string
 	url             string
+	unstable	bool
 	goVersion       []version
 	downloadVersion []version
 	cachedVersion   []version
@@ -73,6 +75,7 @@ func NewManager(opt *opt) (t *Manager) {
 
 	t = &Manager{
 		opt:          opt,
+		unstable:	false,
 		home:         usr.HomeDir,
 		goOs:         runtime.GOOS,
 		goArch:       runtime.GOARCH,
