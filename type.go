@@ -19,6 +19,7 @@ type opt struct {
 }
 
 type version struct {
+	Feature bool   `json:download`
 	Archived bool   `json:"archived"`
 	Unstable bool   `json:"unstable"`
 	Version  string `json:"version"`
@@ -33,6 +34,7 @@ type version struct {
 
 // Manager et the base system manager
 type Manager struct {
+	feat            []string
 	home            string
 	goOs            string
 	goArch          string

@@ -51,6 +51,23 @@ func (t *Manager) getiingMe(n *html.Node, ff string, ok bool) {
 	}
 }
 
+
+func (t *Manager) Down(n *html.Node) {
+	var f func(*html.Node)
+	f = func(g *html.Node) {
+		if g.Type == html.ElementNode && g.Data == "span" {
+			for _, a := range g.Attr {
+				if a.Key == "class" && a.Val == "filename"{
+				}
+			}
+		}
+		for c := g.FirstChild; c != nil; c =c.NextSibling {
+			f(c)
+		}
+	}
+	f(n)
+}
+
 func (t *Manager) addVersion(n *html.Node, ff string, ok bool) {
 	var f func(*html.Node)
 	f = func(g *html.Node) {
@@ -85,12 +102,31 @@ func (t *Manager) getVersion() {
 				}
 			}
 		}
+		if n.Type == html.ElementNode && n.Data == "a" {
+			tt := false
+			var ttt string
+			for _,a := range n.Attr {
+				if a.Key == "class" && a.Val == "download downloadBox" {
+					tt = true
+
+				}
+				if a.Key == "href" {
+					ttt = a.Val
+				}
+			}
+			if tt {
+				t.feat = append(t.feat, ttt[4:])
+			}
+		}
 		if n.Type == html.ElementNode && n.Data == "div" {
 			ff := ""
 			ok := false
 		attr:
 			for _, a := range n.Attr {
 				oks := false
+				if a.Key == "class"&& a.Val == "toggleVisible" && !oks{
+					ok = true
+				}
 				if a.Key == "class" && a.Val == "toggle" {
 					ok = true
 				}
@@ -112,4 +148,12 @@ func (t *Manager) getVersion() {
 		}
 	}
 	f(doc)
+	for ee,gb := range t.goVersion {
+		for _, n := range t.feat {
+			if gb.Filename == n {
+				println("zaazl")
+				t.goVersion[ee].Feature = true
+			}
+		}
+	}
 }
